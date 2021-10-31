@@ -1,4 +1,4 @@
-package ir.eisa.tddtest.data
+package ir.eisa.tddtest.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

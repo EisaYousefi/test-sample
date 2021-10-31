@@ -1,4 +1,4 @@
-package ir.eisa.tddtest.data
+package ir.eisa.tddtest.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -9,5 +9,5 @@ import androidx.room.RoomDatabase
 )
 abstract class ShoppingItemDataBase :RoomDatabase(){
 
-    abstract fun shoppingDao():ShoppingDao
+    abstract fun shoppingDao(): ShoppingDao
 }

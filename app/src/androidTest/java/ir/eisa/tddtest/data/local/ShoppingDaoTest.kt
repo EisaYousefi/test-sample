@@ -6,9 +6,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
-import ir.eisa.tddtest.data.ShoppingDao
-import ir.eisa.tddtest.data.ShoppingItem
-import ir.eisa.tddtest.data.ShoppingItemDataBase
 import ir.eisa.tddtest.getOrAwaitValue
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -20,9 +17,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @SmallTest
 class ShoppingDaoTest {
-/*
+
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()*/
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var dataBase: ShoppingItemDataBase
     private lateinit var dao: ShoppingDao
@@ -48,6 +45,15 @@ class ShoppingDaoTest {
         val allShoppingItems = dao.observeAllShoppingItem().getOrAwaitValue()
 
         assertThat(allShoppingItems).contains(shoppingItem)
+    }
+
+    @Test
+    fun deleteShoppingItem()= runBlockingTest {
+        val shoppingItem = ShoppingItem("name", 1, 1f, "url", 1)
+        dao.insertShoppingItem(shoppingItem)
+        dao.deleteShoppingItem(shoppingItem)
+        val allShoppingItems = dao.observeAllShoppingItem().getOrAwaitValue()
+        assertThat(allShoppingItems).doesNotContain(shoppingItem)
     }
 
     @Test
