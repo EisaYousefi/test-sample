@@ -6,30 +6,39 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import ir.eisa.tddtest.getOrAwaitValue
+import ir.eisa.tddtest.launchFragmentInHiltContainer
+import ir.eisa.tddtest.ui.ShoppingFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
+import javax.inject.Named
 
-@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 @SmallTest
 class ShoppingDaoTest {
 
     @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataBase: ShoppingItemDataBase
+    @Inject
+    @Named("test_db")
+    lateinit var dataBase: ShoppingItemDataBase
     private lateinit var dao: ShoppingDao
 
     @Before
     fun setup() {
-        dataBase = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            ShoppingItemDataBase::class.java
-        ).allowMainThreadQueries().build()
+        hiltRule.inject()
         dao = dataBase.shoppingDao()
     }
 
@@ -38,6 +47,7 @@ class ShoppingDaoTest {
         dataBase.close()
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun insertShoppingItem() = runBlockingTest {
         val shoppingItem = ShoppingItem("name", 1, 1f, "url", 1)
@@ -48,7 +58,7 @@ class ShoppingDaoTest {
     }
 
     @Test
-    fun deleteShoppingItem()= runBlockingTest {
+    fun deleteShoppingItem() = runBlockingTest {
         val shoppingItem = ShoppingItem("name", 1, 1f, "url", 1)
         dao.insertShoppingItem(shoppingItem)
         dao.deleteShoppingItem(shoppingItem)
